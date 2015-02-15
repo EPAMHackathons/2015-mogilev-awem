@@ -18,7 +18,7 @@ function getRunnerHandler(testObject)
 function getYourself()
 {
 	getRunner(getRunnerHandler, 'dTUoUKLPTS');
-	getRunners(getRunnersHandler, "awem");
+	getRunners(getRunnersHandler, "awem", "Pasha");
 }
 function SetParsPos()
 {
@@ -69,10 +69,13 @@ function onParseSuccess(str)
 	alert("yay! it worked" + str);
 	//document.getElementById("conl").innerHTML = str;
 }
-function getRunners(successCallback, groupName)
-{
+function getRunners(successCallback,groupName, meNick) {
+    var queryMe = new Parse.Query(Runner);
+    queryMe.equalTo("nick", meNick);
+
     var query = new Parse.Query(Runner);
     query.equalTo("group", groupName);
+    query.doesNotMatchKeyInQuery("nick", "nick", queryMe);
     query.find({
     success: successCallback,
     error: onParseError
