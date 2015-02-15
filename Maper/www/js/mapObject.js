@@ -70,7 +70,7 @@ function getTargetsHandler(results)
 		if(targets[object.id])
 			targets[object.id].setPosition(pos);
 		else
-			targets[object.id] = placeTarget(pos, map, object.get('trgName'));
+			targets[object.id] = placeTarget(pos, map, object.get('trgName'), object.get('state'));
 		//onParseSuccess(object.id + ' - ' + object.get('trgName') + ' - ' + object.get('state'));
 
 	}
@@ -113,13 +113,19 @@ function handleNoGeolocation(errorFlag)
 	}
 	alert(content);
 }
-function placeTarget(position, map, mesage)
+var iconBase =  'http://maps.google.com/mapfiles/';
+var target_icons = [
+    iconBase + 'marker_black.png',  iconBase + 'marker_green.png',    iconBase + 'marker_orange.png',  iconBase + 'marker.png'
+];
+
+function placeTarget(position, map, mesage, status)
 {
 	//alert(mesage);//test
 	var marker = new google.maps.Marker({
 	position: position,
 	map: map,
-	title: mesage
+	title: mesage,
+	icon: target_icons[status]
 	});
 	map.panTo(position);
 	return marker;
@@ -130,7 +136,7 @@ function placeRuner(position, map, mesage)
 	var marker = new google.maps.Marker({
 	position: position,
 	map: map,
-	title: mesage
+	title: mesage,
 	});
 	map.panTo(position);
 	return marker;

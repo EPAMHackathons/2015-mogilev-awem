@@ -58,14 +58,25 @@
 		<script type="text/javascript" src="js/parsObject.js"></script>
 
         <script type="text/javascript">
-            app.initialize();
+            var TargetStateType =
+			{
+				open: 0,
+				resolved: 1,
+				inprogress: 2,
+				help: 3
+			};
+			
+			app.initialize();
 			
 			google.maps.event.addDomListener(window, 'load', init);
 			
-			var nick;
+			var nick = null;
 			function init()
 			{
+			while(nick == null || nick =="")
+			{
 				nick = prompt("Please, enter user name:");
+			}
 				joinEvent(nick);
 				mapInit();
 			}

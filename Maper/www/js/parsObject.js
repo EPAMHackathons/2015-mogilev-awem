@@ -83,12 +83,7 @@ function getRunners(successCallback,groupName, meNick) {
     error: onParseError
     });
 }
-var TargetStateType = {
-	open: 0,
-	resolved: 1,
-	inprogress: 2,
-	help: 3
-};
+
 
 function createTarget(name, x, y, comment) {
 	var testObject = new Target();
