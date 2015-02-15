@@ -1,5 +1,6 @@
 Parse.initialize("RE4tpxAW81COn2tVEOHEWgEsW67JK4XZfUjiwUmY", "FN8xD0hlnhYAxpJ866FAbdY0t7JAKOy1Icp2TSeW");
-var Runner = Parse.Object.extend("Runner");		
+var Runner = Parse.Object.extend("Runner");
+var Target =  Parse.Object.extend("Target");	
 var me;
 
 function getRunnerHandler(testObject)
@@ -17,18 +18,17 @@ function getRunnerHandler(testObject)
 //}
 function getYourself()
 {
-	getRunner(getRunnerHandler, 'dTUoUKLPTS');
-	getRunners(getRunnersHandler, "awem", "Pasha");
+	getRunner(getRunnerHandler, "awem", nick);
+	getRunners(getRunnersHandler, "awem", nick);
+	getTargets(getTargetsHandler, "hack-Anton")
+	
 }
 function SetParsPos()
 {
-	alert("SetPos");
 	getPos(function(position)
 	{
 		//map.setCenter(pos);
-		alert("getCurrentPosition");
 		me.set("curPos",new Parse.GeoPoint(position.coords.latitude, position.coords.longitude));
-		alert("curPos");
 		saveRunner(me);
 	});
 }
@@ -45,10 +45,12 @@ function saveRunner(runnerObj)
 	});        
 }
 			
-function getRunner(successCallback, objId)
+function getRunner(successCallback, groupName, meNick)
 {
 	var query = new Parse.Query(Runner);
-		query.get(objId,
+    query.equalTo("nick", meNick);
+	query.equalTo("group", groupName)
+	query.first(
 		{
 			success: successCallback,
 			error: onParseError
@@ -66,7 +68,7 @@ function onParseSuccess(str)
 {
 	// The save failed.
 	// error is a Parse.Error with an error code and message.
-	alert("yay! it worked" + str);
+	//alert("yay! it worked" + str);
 	//document.getElementById("conl").innerHTML = str;
 }
 function getRunners(successCallback,groupName, meNick) {
@@ -80,4 +82,48 @@ function getRunners(successCallback,groupName, meNick) {
     success: successCallback,
     error: onParseError
     });
+}
+var TargetStateType = {
+	open: 0,
+	resolved: 1,
+	inprogress: 2,
+	help: 3
+};
+
+function createTarget(name, x, y, comment) {
+	var testObject = new Target();
+	testObject.set("trgName", name);
+	testObject.set("pos", new Parse.GeoPoint(x, y));
+	testObject.set("comment", comment);
+	testObject.set("state", TargetStateType.open);
+	testObject.set("eventId", "hack-Anton");
+	
+	testObject.save(null);
+}
+function getTargets(successCallback, eventId) {
+	var query = new Parse.Query(Target);
+	query.equalTo("eventId", eventId);
+	query.find({
+	  success: successCallback,
+	  error: onParseError
+	});
+}
+function joinEvent(groupNamenick) {
+	var query = new Parse.Query(Runner);
+	 query.equalTo("group", "awem");
+	 query.equalTo("nick", nick);
+	 query.first(
+	 {
+	   success: function(runnerObj) {
+		 //alert("Successfully retrieved " + runnerObj.id);
+//             // Do something with the returned Parse.Object values
+			if (runnerObj) {
+				//onParseSuccess(runnerObj.id + ' - ' + runnerObj.get('curPos').latitude);
+			} else {
+				createRunner(nick, groupName);
+			}
+	   },
+	   error: onParseError
+	 }
+	);
 }

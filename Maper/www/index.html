@@ -59,6 +59,16 @@
 
         <script type="text/javascript">
             app.initialize();
+			
+			google.maps.event.addDomListener(window, 'load', init);
+			
+			var nick;
+			function init()
+			{
+				nick = prompt("Please, enter user name:");
+				joinEvent(nick);
+				mapInit();
+			}
         </script>
     </body>
 </html>

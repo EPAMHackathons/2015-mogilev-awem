@@ -1,28 +1,47 @@
 var map;
-var markers = [];
+var runers = [];
+var targets = [];
 var meMarker;
-google.maps.event.addDomListener(window, 'load', mapInit);
+var msCounter = 0;
+
 function mapInit()
 {
-	alert("mapObjectInit");
 	var mapOptions = { zoom: 6 };
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 	
-	//getPos(function(position)
-	//{
-	//	var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-	//	map.setCenter(pos);
-	//	meMarker = placeMarker(pos, map, "ME");
-	//});
+	getPos(function(position)
+	{
+		var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		map.setCenter(pos);
+		meMarker = placeRuner(pos, map, "ME");
+	});
 	//map.setCenter(-25.363882,131.044922);
 	google.maps.event.addListener(map, 'click', function(e)
 	{
-		var mesage = prompt("Please, enter mesage:");
+		//var name = prompt("Please, enter name:");
+		var mesage = prompt("Please, enter message:");
 		if(mesage)
-			placeMarker(e.latLng, map, mesage);
+		{
+			//placeMarker(e.latLng, map, mesage);
+			
+			createTarget(me.get('nick') + "_CP_" + msCounter++, e.latLng.lat(), e.latLng.lng(), mesage);
+		}
+		setTimeout(updateMap, 1000);
 	});	
 	getYourself();
-	//setInterval(timer, 1000);
+	setInterval(updateMap, 30000);
+}
+function updateMap()
+{
+	/*if(meMarker)
+		meMarker.setMap(null);
+	meMarker = getPos(function(position)
+	{
+		var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+		placeMarker(pos, map, "ME");
+	})*/
+	getYourself();
+	//();
 }
 function getRunnersHandler(results)
 {
@@ -32,24 +51,29 @@ function getRunnersHandler(results)
         
 		var pos = new google.maps.LatLng(object.get('curPos').latitude, object.get('curPos').longitude);
 		
-		if(markers[object.id])
-			markers[object.id].setPlace(pos);
+		if(runers[object.id])
+			runers[object.id].setPosition(pos);
 		else
-			markers[object.id] = placeMarker(pos, map, object.get('nick'));
+			runers[object.id] = placeRuner(pos, map, object.get('nick'));
 		
 		//onParseSuccess(object.id + ' - ' + object.get('nick'));
 	}
 }
-function timer()
+function getTargetsHandler(results)
 {
-	if(meMarker)
-		meMarker.setMap(null);
-	meMarker = getPos(function(position)
-	{
-		var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-		//map.setCenter(pos);
-		placeMarker(pos, map, "ME");
-	});
+	var object;
+	for (var i = 0; i < results.length; i++)
+	{ 
+		object = results[i];
+		
+		var pos = new google.maps.LatLng(object.get('pos').latitude, object.get('pos').longitude);
+		if(targets[object.id])
+			targets[object.id].setPosition(pos);
+		else
+			targets[object.id] = placeTarget(pos, map, object.get('trgName'));
+		//onParseSuccess(object.id + ' - ' + object.get('trgName') + ' - ' + object.get('state'));
+
+	}
 }
 function getPos(successCallback)
 {
@@ -89,13 +113,24 @@ function handleNoGeolocation(errorFlag)
 	}
 	alert(content);
 }
-function placeMarker(position, map, mesage)
+function placeTarget(position, map, mesage)
 {
 	//alert(mesage);//test
 	var marker = new google.maps.Marker({
 	position: position,
 	map: map,
-	cursor: mesage
+	title: mesage
+	});
+	map.panTo(position);
+	return marker;
+}
+function placeRuner(position, map, mesage)
+{
+	//alert(mesage);//test
+	var marker = new google.maps.Marker({
+	position: position,
+	map: map,
+	title: mesage
 	});
 	map.panTo(position);
 	return marker;
