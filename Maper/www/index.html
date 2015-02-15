@@ -19,6 +19,7 @@
     specific language governing permissions and limitations
     under the License.
 -->
+
 <html>
     <head>
         <meta charset="utf-8" />
@@ -46,155 +47,19 @@
 			padding: 0px
 		  }
 		</style>
-
+		
         <script type="text/javascript" src="cordova.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
-		
 		<script src="https://maps.googleapis.com/maps/api/js?v=3.exp&signed_in=true"></script>
 		
 		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
         <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.3.4.min.js"></script>
 		
-		<!-- parse example -->
-		<script type="text/javascript">
-			 function onParseError(aObj, error) {
-				// The save failed.
-				// error is a Parse.Error with an error code and message.
-				alert('Failed to create new object, with error code: ' + error.message);
-			  }
-			
-			 function onParseSuccess(str) {
-				// The save failed.
-				// error is a Parse.Error with an error code and message.
-				alert("yay! it worked" + str);
-				//document.getElementById("conl").innerHTML = str;
-			  }
-		</script>
-
-		  <script type="text/javascript">
-			function saveRunner(runnerObj) {
-				runnerObj.save(null,
-					{
-						  success: function(runnerObj) {
-							// The object was saved successfully.
-							onParseSuccess('New object created with objectId: ' + runnerObj.id);
-						  },
-						  error: onParseError
-					});        
-			}
-			
-			function getRunner(successCallback, objId) {
-				var query = new Parse.Query(Runner);
-				query.get(objId, {
-					  success: successCallback,
-					  error: onParseError
-				});
-			} 
-		  </script>
+		<script type="text/javascript" src="js/mapObject.js"></script>
+		<script type="text/javascript" src="js/parsObject.js"></script>
 		
         <script type="text/javascript">
             app.initialize();
-			
-			Parse.initialize("RE4tpxAW81COn2tVEOHEWgEsW67JK4XZfUjiwUmY", "FN8xD0hlnhYAxpJ866FAbdY0t7JAKOy1Icp2TSeW");
-			var Runner = Parse.Object.extend("Runner");
-			
-			var me;
-			getYourself();
-			
-			var map;
-			function initialize()
-			{
-			  var mapOptions = {
-				zoom: 6
-			  };
-			  map = new google.maps.Map(document.getElementById('map-canvas'),
-				  mapOptions);
-
-			  // Try HTML5 geolocation
-			  if(navigator.geolocation)
-			  {
-				navigator.geolocation.getCurrentPosition(function(position) {
-				  var pos = new google.maps.LatLng(position.coords.latitude,
-												   position.coords.longitude);
-
-				  var infowindow = new google.maps.InfoWindow({
-					map: map,
-					position: pos,
-					content: 'HI'
-				  });
-
-				  map.setCenter(pos);
-				}, function() {
-				  handleNoGeolocation(true);
-				}, 
-				{
-					enableHighAccuracy: true,
-					timeout: 60000,
-					maximumAge: 0
-				}
-				);
-			  } else {
-				// Browser doesn't support Geolocation
-				handleNoGeolocation(false);
-			  }
-			  
-			  google.maps.event.addListener(map, 'click', function(e)
-				{
-					var mesage = prompt("Please, enter mesage:");
-					if(mesage)
-						placeMarker(e.latLng, map, mesage);
-			  });
-			  
-			  //setInterval(timer, 10000);
-			}
-			
-			
-			//function timer()
-			//{
-			//	alert(me);
-			//}
-			function getRunnerHandler(testObject)
-			{
-				me = testObject;
-						
-				// The object was retrieved successfully.
-				onParseSuccess('Object name: ' + me.get("nick"));
-			}
-			function getYourself()
-			{
-				getRunner(getRunnerHandler, 'dTUoUKLPTS');
-			}
-			
-			function handleNoGeolocation(errorFlag) {
-			  if (errorFlag) {
-				var content = 'Error: The Geolocation service failed.';
-			  } else {
-				var content = 'Error: Your browser doesn\'t support geolocation.';
-			  }
-
-			  var options = {
-				map: map,
-				position: new google.maps.LatLng(60, 105),
-				content: content
-			  };
-			  
-			  var infowindow = new google.maps.InfoWindow(options);
-			  map.setCenter(options.position);
-			}
-
-			google.maps.event.addDomListener(window, 'load', initialize);
-
-			function placeMarker(position, map, mesage)
-			{
-				alert(mesage);//test
-				var marker = new google.maps.Marker({
-				position: position,
-				map: map,
-				title: mesage
-				});
-				map.panTo(position);
-			}
-			
         </script>
     </body>
 </html>
