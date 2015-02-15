@@ -75,9 +75,13 @@
         });
     }    
 
-    function getRunners(groupName) {
+    function getRunners(groupName, meNick) {
+        var queryMe = new Parse.Query(Runner);
+        queryMe.equalTo("nick", meNick);
+
         var query = new Parse.Query(Runner);
         query.equalTo("group", groupName);
+        query.doesNotMatchKeyInQuery("nick", "nick", queryMe);
         query.find({
           success: function(results) {
             //alert("Successfully retrieved " + results.length + " runners.");
@@ -178,7 +182,7 @@
         
         getRunner("dTUoUKLPTS");
         
-        getRunners(groupName);
+        getRunners(groupName, "Pasha");
         getTargets(eventId);
         
         joinEvent("Pasha");
