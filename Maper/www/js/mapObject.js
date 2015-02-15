@@ -70,7 +70,7 @@ function getTargetsHandler(results)
 		if(targets[object.id])
 			targets[object.id].setPosition(pos);
 		else
-			targets[object.id] = placeTarget(pos, map, object.get('trgName'), object.get('state'));
+			targets[object.id] = placeTarget(pos, map, object.get('comment'), object.get('state'));
 		//onParseSuccess(object.id + ' - ' + object.get('trgName') + ' - ' + object.get('state'));
 
 	}
@@ -125,9 +125,21 @@ function placeTarget(position, map, mesage, status)
 	position: position,
 	map: map,
 	title: mesage,
-	icon: target_icons[status]
+	icon: target_icons[status],
+	clickable: true
 	});
 	map.panTo(position);
+	
+	marker.info = new google.maps.InfoWindow({
+	  content: mesage
+	});
+
+	//marker.info.open(map, marker);
+
+	google.maps.event.addListener(marker, 'click', function() {
+	  marker.info.open(map, marker);
+	});
+	
 	return marker;
 }
 function placeRuner(position, map, mesage)
@@ -137,8 +149,20 @@ function placeRuner(position, map, mesage)
 	position: position,
 	map: map,
 	title: mesage,
+	icon: "http://maps.google.com/mapfiles/ms/micons/horsebackriding.png"
 	});
 	map.panTo(position);
+	
+	marker.info = new google.maps.InfoWindow({
+	  content: mesage
+	});
+
+	//marker.info.open(map, marker);
+
+	google.maps.event.addListener(marker, 'click', function() {
+	  marker.info.open(map, marker);
+	});
+	
 	return marker;
 }
 
