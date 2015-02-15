@@ -25,40 +25,44 @@
         </script>        
     </head>
     <body>
-        <div class="app">
-            <h1>PhoneGap ReadMe!</h1>
+        <div>
             <div id="deviceready" class="blink">
                 <p class="event listening">Connecting to Device</p>
                 <p class="event received">Device is Ready</p>
             </div>
-            
-<!-- parse example -->
-        <div style="display:none" class="error">
-          Looks like there was a problem saving the test object. Make sure you've set your application ID and javascript key correctly in the call to <code>Parse.initialize</code> in this file.
-        </div>
-
-        <div style="display:none" class="success">
-          <p>We've also just created your first object using the following code:</p>      
-            <code>
-              var TestObject = Parse.Object.extend("TestObject");<br/>
-              var testObject = new TestObject();<br/>
-              testObject.save({foo: "bar"});
-            </code>
-        </div>
-<!-- end parse  -->        
+            <div id="conl">
+                Output will be here!
+            </div>
         </div>
 
 <!-- parse example -->
-      <script type="text/javascript">
-    Parse.initialize("RE4tpxAW81COn2tVEOHEWgEsW67JK4XZfUjiwUmY", "FN8xD0hlnhYAxpJ866FAbdY0t7JAKOy1Icp2TSeW");
+  <script type="text/javascript">
+    function saveRunner(runnerObj) {
+        runnerObj.save(null,
+            {
+                  success: function(runnerObj) {
+                    // The object was saved successfully.
+                    alert("yay! it worked");
+                    document.getElementById("conl").innerHTML = 'New object created with objectId: ' + runnerObj.id;
+                  },
+                  error: function(testObject, error) {
+                    // The save failed.
+                    // error is a Parse.Error with an error code and message.
+                    alert('Failed to create new object, with error code: ' + error.message);
+                  }
+            });        
+    }
+  </script>
+
+  <script type="text/javascript">
+        Parse.initialize("RE4tpxAW81COn2tVEOHEWgEsW67JK4XZfUjiwUmY", "FN8xD0hlnhYAxpJ866FAbdY0t7JAKOy1Icp2TSeW");
     
-var TestObject = Parse.Object.extend("TestObject");
-var testObject = new TestObject();
-testObject.save({foo: "bar"}).then(function(object) {
-  alert("yay! it worked");
-});
+        var Runner = Parse.Object.extend("Runner");
+        var testObject = new Runner();
+        
+        testObject.set("nick", "foo");
+        saveRunner(testObject);
   </script>
 <!-- end parse  -->        
-
     </body>
 </html>
