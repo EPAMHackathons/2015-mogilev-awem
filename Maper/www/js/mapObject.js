@@ -8,20 +8,37 @@ function mapInit()
 	var mapOptions = { zoom: 6 };
 	map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
 	
-	getPos(function(position)
-	{
-		var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-		map.setCenter(pos);
-		meMarker = placeMarker(pos, map, "ME");
-	});
-	
+	//getPos(function(position)
+	//{
+	//	var pos = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+	//	map.setCenter(pos);
+	//	meMarker = placeMarker(pos, map, "ME");
+	//});
+	//map.setCenter(-25.363882,131.044922);
 	google.maps.event.addListener(map, 'click', function(e)
 	{
 		var mesage = prompt("Please, enter mesage:");
 		if(mesage)
 			placeMarker(e.latLng, map, mesage);
 	});	
-	setInterval(timer, 1000);
+	getYourself();
+	//setInterval(timer, 1000);
+}
+function getRunnersHandler(results)
+{
+    for (var i = 0; i < results.length; i++)
+	{ 
+        var object = results[i];
+        
+		var pos = new google.maps.LatLng(object.get('curPos').latitude, object.get('curPos').longitude);
+		
+		if(markers[object.id])
+			markers[object.id].setPlace(pos);
+		else
+			markers[object.id] = placeMarker(pos, map, object.get('nick'));
+		
+		//onParseSuccess(object.id + ' - ' + object.get('nick'));
+	}
 }
 function timer()
 {
