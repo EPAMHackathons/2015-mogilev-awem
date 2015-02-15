@@ -47,8 +47,8 @@
      function onParseSuccess(str) {
         // The save failed.
         // error is a Parse.Error with an error code and message.
-        alert("yay! it worked");
-        document.getElementById("conl").innerHTML = str;
+        //alert("yay! it worked");
+        document.getElementById("conl").innerHTML = document.getElementById("conl").innerHTML + "<br>" + str;
       }
     </script>
 
@@ -63,10 +63,9 @@
                   error: onParseError
             });        
     }
-    
+
     function getRunner(objId) {
         var query = new Parse.Query(Runner);
-        var testObject = new Runner();
         query.get(objId, {
               success: function(testObject) {
                 // The object was retrieved successfully.
@@ -74,22 +73,116 @@
               },
               error: onParseError
         });
-        
-        return testObject;
     }    
+
+    function getRunners(groupName) {
+        var query = new Parse.Query(Runner);
+        query.equalTo("group", groupName);
+        query.find({
+          success: function(results) {
+            //alert("Successfully retrieved " + results.length + " runners.");
+            // Do something with the returned Parse.Object values
+            for (var i = 0; i < results.length; i++) { 
+              var object = results[i];
+              onParseSuccess(object.id + ' - ' + object.get('nick'));
+            }
+          },
+          error: onParseError
+        });
+    }
+    
+    var TargetStateType = {
+        open: 0,
+        resolved: 1,
+        inprogress: 2,
+        help: 3
+    };
+    
+    function createTarget(name, x, y, comment, eventId) {
+        var testObject = new Target();
+        testObject.set("trgName", name);
+        testObject.set("pos", new Parse.GeoPoint(x, y));
+        testObject.set("comment", name);
+        testObject.set("state", TargetStateType.open);
+        testObject.set("eventId", eventId);
+        
+        testObject.save(null);
+    }
+
+    function markTarget(obj, state) {
+        obj.set("state", state);
+        obj.save(null);
+    }
+
+    function getTargets(eventId) {
+        var query = new Parse.Query(Target);
+        query.equalTo("eventId", eventId);
+        query.find({
+          success: function(results) {
+            //alert("Successfully retrieved " + results.length + " targets.");
+            // Do something with the returned Parse.Object values
+            var object;
+            for (var i = 0; i < results.length; i++) { 
+              object = results[i];
+              onParseSuccess(object.id + ' - ' + object.get('trgName') + ' - ' + object.get('state'));
+            }
+            
+            // Test mark target code
+            markTarget(object, TargetStateType.inprogress);
+          },
+          error: onParseError
+        });
+    }
+        
+    function joinEvent(nick) {
+        var query = new Parse.Query(Runner);
+         query.equalTo("group", groupName);
+         query.equalTo("nick", nick);
+         query.first(
+         {
+           success: function(runnerObj) {
+             //alert("Successfully retrieved " + runnerObj.id);
+//             // Do something with the returned Parse.Object values
+                if (runnerObj) {
+                    onParseSuccess(runnerObj.id + ' - ' + runnerObj.get('curPos').latitude);
+                } else {
+                    createRunner(nick, groupName);
+                }
+           },
+           error: onParseError
+         }
+        );
+    }
+    
+    function createRunner(nick, groupName) {
+        var testObject = new Runner();
+        testObject.set("nick", nick);
+        testObject.set("group", groupName);
+        saveRunner(testObject);
+    }
   </script>
 
   <script type="text/javascript">
         Parse.initialize("RE4tpxAW81COn2tVEOHEWgEsW67JK4XZfUjiwUmY", "FN8xD0hlnhYAxpJ866FAbdY0t7JAKOy1Icp2TSeW");
     
         var Runner = Parse.Object.extend("Runner");
+        var Target =  Parse.Object.extend("Target");
         
+        var groupName = "awem";
+        var eventId = "hack-Anton";
         //var testObject = new Runner();
         //testObject.set("nick", "foo");
         //saveRunner(testObject);
         
-        var testObject = getRunner("0y31oywcTC");
-        onParseSuccess('Return o bject name: ' + testObject.get("nick"));
+        //createTarget("CP2", 53, 29, "CP2 Comment", eventId);
+        
+        getRunner("dTUoUKLPTS");
+        
+        getRunners(groupName);
+        getTargets(eventId);
+        
+        joinEvent("Pasha");
+        joinEvent("Andrey");
   </script>
 <!-- end parse  -->        
     </body>
