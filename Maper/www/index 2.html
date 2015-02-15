@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8" />
+        <meta name="format-detection" content="telephone=no" />
+        <meta name="msapplication-tap-highlight" content="no" />
+        <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+        <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+        <link rel="stylesheet" type="text/css" href="css/index.css" />
+<!-- parse example -->
+          <link rel="stylesheet" href="css/reset.css">
+          <link rel="stylesheet" href="css/styles.css">
+<!-- end parse  -->        
+        <title>Hello World</title>
+
+<!-- parse example -->
+          <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js"></script>
+          <script type="text/javascript" src="http://www.parsecdn.com/js/parse-1.3.4.min.js"></script>
+<!-- end parse  -->        
+
+        <script type="text/javascript" src="cordova.js"></script>
+        <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript">
+            app.initialize();
+        </script>        
+    </head>
+    <body>
+        <div>
+            <h1>Parse Mapper</h1>
+            <div id="deviceready" class="blink">
+                <p class="event listening">Connecting to Device</p>
+                <p class="event received">Device is Ready</p>
+            </div>
+            <div id="conl">
+                Output will be here!
+            </div>
+        </div>
+
+<!-- parse example -->
+  <script type="text/javascript">
+     function onParseError(aObj, error) {
+        // The save failed.
+        // error is a Parse.Error with an error code and message.
+        alert('Failed to create new object, with error code: ' + error.message);
+      }
+    
+     function onParseSuccess(str) {
+        // The save failed.
+        // error is a Parse.Error with an error code and message.
+        alert("yay! it worked");
+        document.getElementById("conl").innerHTML = str;
+      }
+    </script>
+
+  <script type="text/javascript">
+    function saveRunner(runnerObj) {
+        runnerObj.save(null,
+            {
+                  success: function(runnerObj) {
+                    // The object was saved successfully.
+                    onParseSuccess('New object created with objectId: ' + runnerObj.id);
+                  },
+                  error: onParseError
+            });        
+    }
+    
+    function getRunner(objId) {
+        var query = new Parse.Query(Runner);
+        var testObject = new Runner();
+        query.get(objId, {
+              success: function(testObject) {
+                // The object was retrieved successfully.
+                onParseSuccess('Object name: ' + testObject.get("nick"));
+              },
+              error: onParseError
+        });
+        
+        return testObject;
+    }    
+  </script>
+
+  <script type="text/javascript">
+        Parse.initialize("RE4tpxAW81COn2tVEOHEWgEsW67JK4XZfUjiwUmY", "FN8xD0hlnhYAxpJ866FAbdY0t7JAKOy1Icp2TSeW");
+    
+        var Runner = Parse.Object.extend("Runner");
+        
+        //var testObject = new Runner();
+        //testObject.set("nick", "foo");
+        //saveRunner(testObject);
+        
+        var testObject = getRunner("0y31oywcTC");
+        onParseSuccess('Return o bject name: ' + testObject.get("nick"));
+  </script>
+<!-- end parse  -->        
+    </body>
+</html>
